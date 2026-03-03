@@ -9,24 +9,21 @@ exmple
     As Index or row 2 and 3 contains same number of 1's that is 4 but we have to return small index.
 
 class Solution {
-    public int totalElements(int[] arr) {
+    public int findMax1sRow(int[][] mat) {
         // code here
-        Map<Integer,Integer> mp=new HashMap<>();
-        int l=0,r=0,n=arr.length;
-        int size=0;
-        while(r<n){
-            mp.put(arr[r],mp.getOrDefault(arr[r],0)+1);
-            while(mp.size()>2){
-                mp.put(arr[l],mp.get(arr[l])-1);
-                if(mp.get(arr[l])==0){
-                    mp.remove(arr[l]);
-                    
-                }
-                l++;
+        int rows=mat.length;
+        int cols=mat[0].length;
+        int row=0,col=cols-1;
+        int index=0;
+        while(row<rows && col>=0){
+            if(mat[row][col]==1){
+                index=row;
+                col--;
             }
-            size=Math.max(size,r-l+1);
-            r++;
+            else{
+                row++;
+            }
         }
-        return size;
+        return index;
     }
 }
