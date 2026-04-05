@@ -1,0 +1,71 @@
+Given an array of integers arr[] and an integer target. We need to build an expression out of arr[] by adding one of the symbols '+' or  '-' before each integer in arr[] and then concatenate all the integers. 
+For example : if arr[] = [2, 1], you can add a '+' before 2 and a '-' before 1 and concatenate them to build the expression "+2-1".
+Return the number of different expressions that can be built, which evaluates to target.
+Note : An expression is considered different from another if the placement of '+' and '-' operators differs, even if the resulting value is the same. 
+
+Examples :
+Input: arr[] = [1, 1, 1, 1, 1], target = 3
+Output: 5
+Explanation: There are 5 ways to assign symbols to make the sum of nums be target 3.
+-1 + 1 + 1 + 1 + 1 = 3
++1 - 1 + 1 + 1 + 1 = 3
++1 + 1 - 1 + 1 + 1 = 3
++1 + 1 + 1 - 1 + 1 = 3
++1 + 1 + 1 + 1 - 1 = 3
+Input: arr[] = [1, 2, 3], target = 2
+Output: 1
+Explanation: There are 1 way to assign symbols to make the sum of nums be target 2(+1 -2 +3). 
+
+Constraints:
+1 ≤ arr.size() ≤ 50
+1 ≤ arr[i] ≤ 20
+0 ≤ sum(arr) ≤ 1000
+-1000 ≤ target ≤ 1000
+
+Approach:
+  Using Space Optimization - O(n*Sum) Time and O(Sum) Space
+     This approach reduces space usage by observing that each DP row depends only on the previous row.
+     Instead of maintaining a full 2D table, two 1D arrays are used to represent the previous and current states.
+     Here, each index in the array stores the number of ways to achieve the corresponding sum after processing a certain number of elements. 
+
+Implementation:
+   class Solution {
+    public int totalWays(int[] arr, int target) {
+        // code here
+          int n = arr.length;
+        int totalSum = 0;
+
+        for (int x : arr)
+            totalSum += x;
+
+        int size = 2 * totalSum + 1;
+        
+        // only two 1D arrays curr and prev
+        int[] prev = new int[size];
+        int[] curr = new int[size];
+
+        prev[totalSum] = 1;
+
+        for (int i = 1; i <= n; i++) {
+
+            Arrays.fill(curr, 0);
+            int val = arr[i - 1];
+
+            for (int sum = 0; sum < size; sum++) {
+
+                // add current element
+                if (sum + val < size)
+                    curr[sum + val] += prev[sum];
+
+                // subtract current element
+                if (sum - val >= 0)
+                    curr[sum - val] += prev[sum];
+            }
+
+            prev = curr.clone();
+        }
+
+        return prev[target + totalSum];
+    }
+}
+
